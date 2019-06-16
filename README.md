@@ -1,3 +1,8 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.org/slotties/imageService.png?branch=master)](https://travis-ci.org/slotties/imageService)
+
+
+
 # What is this about?
 
 This service allows on-the-fly resizing of images.
