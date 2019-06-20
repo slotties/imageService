@@ -1,7 +1,6 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/github/package-json/v/slotties/imageService.svg)](https://github.com/slotties/imageService)
 [![Build Status](https://travis-ci.org/slotties/imageService.png?branch=master)](https://travis-ci.org/slotties/imageService)
-
-
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # What is this about?
 
@@ -24,17 +23,17 @@ Any other status code means the server is not available and should be taken out 
 
 ## Resizing
 
-     /resize/mediaId_WxH.jpg
+     /resized/mediaId_WxH.jpg
 
 The path is made of these variable parts:
 - `mediaId`: the base64 encoded path to the file.
 - `WxH` is the `W`idth and the `H`eight of the output file. The image will be WxH _as good as possible_ meaning it will either fit the height or width of the input file but always keep the aspect ratio.
-- `.jpg` is the target output encoding, e.g. JPG or PNG. Leaving this empty will result in the same format as the input file was.
+- `.jpg` is the target output encoding, e.g. JPG or PNG. Leaving this empty will result in the same format as the input file was. (*NOT IMPLEMENTED YET*)
 
 The endpoint supports the following optional request parameters:
 - `fill` - the output image will always have a dimension of the requested `WxH` (regardless the original size). Empty space resulting in keeping the aspect ratio of the original image will be filled with the color provided by the `bg` parameter.
 - `bg` - defines a background color to fill up empty space when using the `fill` parameter.
-- `progressive` - returns a progressive JPG. This parameter is ignored when the output format is not JPG.
-- `sign` - a signature of the whole operation. The signature is calculated like this: `md5(mediaId + WxH + salt)`. The `salt` is provided as start parameter of this service.
+- `progressive` - returns a progressive JPG. This parameter is ignored when the output format is not JPG. (*NOT IMPLEMENTED YET*)
+- `sign` - a signature of the whole operation. The signature is calculated like this: `md5(mediaId + WxH + salt)`. The `salt` is provided as start parameter of this service. (*NOT IMPLEMENTED YET*)
 
 TODO: specify default values.
