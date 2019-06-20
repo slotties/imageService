@@ -1,5 +1,6 @@
 const http = require('http');
 const url = require('url');
+const querystring = require('querystring');
 const requestParser = require('./requestParser');
 const imageOperations = require('./imageOperations');
 
@@ -13,8 +14,8 @@ function handleHealth(response) {
     response.end('UP');
 }
 
-function handleResize(request, urlParts, response) {
-    const resizeRequest = requestParser.parseResizeRequest(urlParts.pathname);
+function handleResize(urlPath, queryParameters, response) {
+    const resizeRequest = requestParser.parseResizeRequest(urlPath, queryParameters);
     if (resizeRequest) {
         const resizer = imageOperations.resize(resizeRequest);
         response.writeHead(200, {
@@ -24,7 +25,7 @@ function handleResize(request, urlParts, response) {
         resizer.pipe(response);
     } else {
         response.writeHead(400);
-        response.end('Invalid path: ' + urlParts.pathname);
+        response.end('Invalid path: ' + urlPath);
     }
 
 }
@@ -36,8 +37,9 @@ function handleUnknownPath(response) {
 
 http.createServer((request, response) => {
     const urlParts = url.parse(request.url);
-    if (urlParts && urlParts.pathname.indexOf('/resize/') === 0) {
-        handleResize(request, urlParts, response);
+    const queryParameters = querystring.parse(urlParts.query);
+    if (urlParts && urlParts.pathname.indexOf('/resized/') === 0) {
+        handleResize(urlParts.pathname, queryParameters, response);
     } else if (urlParts && urlParts.pathname === '/health') {
         handleHealth(response);
     } else {
