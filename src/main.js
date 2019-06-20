@@ -3,9 +3,12 @@ const url = require('url');
 const querystring = require('querystring');
 const requestParser = require('./requestParser');
 const imageOperations = require('./imageOperations');
+const args = require('./args');
 
-// TODO: set via arguments
-const port = 8080;
+const defaultParams = {
+    port: '8080',
+};
+const startParams = Object.assign({}, defaultParams, args.parse(process.argv));
 
 function handleHealth(response) {
     response.writeHead(200, {
@@ -45,4 +48,6 @@ http.createServer((request, response) => {
     } else {
         handleUnknownPath(response);
     }
-}).listen(port);
+}).listen(parseInt(startParams.port));
+
+console.log('Running on port ' + startParams.port + '.');

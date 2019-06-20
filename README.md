@@ -10,7 +10,11 @@ This service allows on-the-fly resizing of images.
 
 The service uses a local storage to search files. This might be a *nix mount as well.
 
-The service stores resized images to an output folder. The service is expected to be used in front of an nginx or apache/HTTPD that handles caching using the output folder.
+The service stores resized images to an output folder. The service is expected to be used in behind an nginx or apache/HTTPD that handles delivery using the output folder.
+
+# How to start the service?
+
+    node ./src/main.js --port=[target port]
 
 # Endpoints
 
