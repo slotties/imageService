@@ -14,7 +14,7 @@ The service stores resized images to an output folder. The service is expected t
 
 # How to start the service?
 
-    node ./src/main.js --port=[target port]
+    node ./src/main.js --port=[target port] --cacheDirectory=./images --tmpDirectory=/tmp/images
 
 # Endpoints
 

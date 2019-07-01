@@ -2,13 +2,17 @@ const http = require('http');
 const url = require('url');
 const querystring = require('querystring');
 const requestParser = require('./requestParser');
-const imageOperations = require('./imageOperations');
+const imageService = require('./imageService');
 const args = require('./args');
 
 const defaultParams = {
     port: '8080',
+    cacheDirectory: './images',
+    tmpDirectory: '/tmp/images'
 };
 const startParams = Object.assign({}, defaultParams, args.parse(process.argv));
+
+imageService.init(startParams.cacheDirectory, startParams.tmpDirectory);
 
 function handleHealth(response) {
     response.writeHead(200, {
@@ -20,7 +24,7 @@ function handleHealth(response) {
 function handleResize(urlPath, queryParameters, response) {
     const resizeRequest = requestParser.parseResizeRequest(urlPath, queryParameters);
     if (resizeRequest) {
-        const resizer = imageOperations.resize(resizeRequest);
+        const resizer = imageService.resize(resizeRequest);
         response.writeHead(200, {
             // FIXME
             'Content-Type': 'image/jpg'
@@ -50,4 +54,5 @@ http.createServer((request, response) => {
     }
 }).listen(parseInt(startParams.port));
 
-console.log('Running on port ' + startParams.port + '.');
+console.log('Running on port %i. Using %s as temporary directory and writing processed files to %s.', 
+    startParams.port, startParams.tmpDirectory, startParams.cacheDirectory);

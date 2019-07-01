@@ -1,9 +1,9 @@
 const longParamNoValuePattern = /^\-\-([a-z]+)$/i;
-const longParamWithValuePattern = /^\-\-([a-z]+)=([a-z0-9]+)$/i;
+const longParamWithValuePattern = /^\-\-([a-z]+)=([a-z0-9\/_\-\.]+)$/i;
 
 function parseCommandlineArguments(argv) {
     const parsedArgs = {};
-
+    
     argv.forEach((arg) => {
         let key = null;
         let value = true;
