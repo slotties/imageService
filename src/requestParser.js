@@ -34,7 +34,8 @@ function parseResizeRequest (path, queryParameters) {
                 fileName: decodeFileName(match[1]),
                 width: parseInt(match[2], 10),
                 height: parseInt(match[3], 10),
-                outputFormat: match[4] || null
+                outputFormat: match[4] || null,
+                originalPath: match[0]
             };
 
             if (queryParameters.fill) {

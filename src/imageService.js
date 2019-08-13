@@ -21,6 +21,11 @@ function init(imagesSourceDirectory, cacheDirectory, tmpDirectory) {
         fs.mkdirSync(__cacheDirectory, { recursive: true });
     }
 
+    const resizedCacheDir = path.join(__cacheDirectory, 'resized');
+    if (!fs.existsSync(resizedCacheDir)) {
+        fs.mkdirSync(resizedCacheDir, { recursive: true });
+    }
+
     if (!fs.existsSync(__tmpDirectory)) {
         fs.mkdirSync(__tmpDirectory, { recursive: true });
     }
@@ -83,8 +88,8 @@ function resize(resizeRequest) {
 
     const operation = imageOperations.resize(resizeRequest);
     if (operation) {
-        const tmpFilePath = path.join(__cacheDirectory, uniqueFileName());
-        const cacheFilePath = path.join(__tmpDirectory, resizeRequest.fileName);
+        const tmpFilePath = path.join(__tmpDirectory, uniqueFileName());
+        const cacheFilePath = path.join(__cacheDirectory, resizeRequest.originalPath);
         
         const fsPipe = new stream.PassThrough().pipe(
             fs.createWriteStream(tmpFilePath)

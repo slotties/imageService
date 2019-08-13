@@ -27,6 +27,7 @@ function handleResize(urlPath, queryParameters, response) {
     if (resizeRequest) {
         const resizer = imageService.resize(resizeRequest);
         if (resizer) {
+            console.log('Resized ' + urlPath + '.');
             response.writeHead(200, {
                 // FIXME
                 'Content-Type': 'image/jpg'
