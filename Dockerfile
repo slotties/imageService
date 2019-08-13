@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:10.16.2-jessie
 
 WORKDIR /opt/imageService
 
