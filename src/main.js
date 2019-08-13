@@ -7,12 +7,13 @@ const args = require('./args');
 
 const defaultParams = {
     port: '8080',
-    cacheDirectory: './images',
+    imageSourceDirectory: '/usr/share/images',
+    cacheDirectory: '/var/cache/images',
     tmpDirectory: '/tmp/images'
 };
 const startParams = Object.assign({}, defaultParams, args.parse(process.argv));
 
-imageService.init(startParams.cacheDirectory, startParams.tmpDirectory);
+imageService.init(startParams.imageSourceDirectory, startParams.cacheDirectory, startParams.tmpDirectory);
 
 function handleHealth(response) {
     response.writeHead(200, {
@@ -25,11 +26,16 @@ function handleResize(urlPath, queryParameters, response) {
     const resizeRequest = requestParser.parseResizeRequest(urlPath, queryParameters);
     if (resizeRequest) {
         const resizer = imageService.resize(resizeRequest);
-        response.writeHead(200, {
-            // FIXME
-            'Content-Type': 'image/jpg'
-        });
-        resizer.pipe(response);
+        if (resizer) {
+            response.writeHead(200, {
+                // FIXME
+                'Content-Type': 'image/jpg'
+            });
+            resizer.pipe(response);
+        } else {
+            response.writeHead(403);
+            response.end('Invalid path: ' + urlPath);
+        }
     } else {
         response.writeHead(400);
         response.end('Invalid path: ' + urlPath);
@@ -54,5 +60,9 @@ http.createServer((request, response) => {
     }
 }).listen(parseInt(startParams.port));
 
-console.log('Running on port %i. Using %s as temporary directory and writing processed files to %s.', 
-    startParams.port, startParams.tmpDirectory, startParams.cacheDirectory);
+console.log('Running on port %i. Using %s as source direcctory of images. %s as temporary directory and writing processed files to %s.',
+    startParams.port,
+    startParams.imageSourceDirectory,
+    startParams.tmpDirectory,
+    startParams.cacheDirectory
+);

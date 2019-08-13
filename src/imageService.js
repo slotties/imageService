@@ -4,12 +4,18 @@ const fs = require('fs');
 const path = require('path');
 const uuid = require('uuid/v4');
 
+var __imagesSourceDirectory;
 var __cacheDirectory;
 var __tmpDirectory;
 
-function init(cacheDirectory, tmpDirectory) {
+function init(imagesSourceDirectory, cacheDirectory, tmpDirectory) {
+    __imagesSourceDirectory = imagesSourceDirectory;
     __cacheDirectory = cacheDirectory;
     __tmpDirectory = tmpDirectory;
+
+    if (!fs.existsSync(__imagesSourceDirectory)) {
+        fs.mkdirSync(__imagesSourceDirectory, { recursive: true });
+    }
 
     if (!fs.existsSync(__cacheDirectory)) {
         fs.mkdirSync(__cacheDirectory, { recursive: true });
@@ -57,7 +63,24 @@ function storeFile(tmpFilePath, cacheFilePath) {
     });
 }
 
+function getImageSourcePath(relativeFileName) {
+    const absoluteFileName = path.join(__imagesSourceDirectory, relativeFileName);
+    if (absoluteFileName.indexOf(__imagesSourceDirectory) === 0 && fs.existsSync(absoluteFileName)) {
+        return absoluteFileName;
+    }
+
+    return null;
+}
+
 function resize(resizeRequest) {
+    const imageSourcePath = getImageSourcePath(resizeRequest.fileName);
+    if (!imageSourcePath) {
+        console.warn("Image " + resizeRequest.fileName + " was requested but the file seems not be be under " + __imagesSourceDirectory + ". Access denied.");
+        return null;
+    }
+
+    resizeRequest.imageSourcePath = imageSourcePath;
+
     const operation = imageOperations.resize(resizeRequest);
     if (operation) {
         const tmpFilePath = path.join(__cacheDirectory, uniqueFileName());
