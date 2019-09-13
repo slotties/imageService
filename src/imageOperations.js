@@ -13,7 +13,7 @@ function resize(resizeRequest) {
         resizeParams.fit = 'inside';
     }
 
-    return sharp(resizeRequest.fileName)
+    return sharp(resizeRequest.imageSourcePath)
         .rotate()
         .resize(resizeParams);
 }
