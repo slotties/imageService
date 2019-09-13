@@ -23,7 +23,7 @@ The service stores resized images to an output folder. The service is expected t
     /health
 
 The endpoint will always return an HTTP 200 with the body `UP`.
-Any other status code means the server is not available and should be taken out of the load balancer.
+Unavailability of this endpoint means the server is not available and should be taken out of the load balancer.
 
 ## Resizing
 
