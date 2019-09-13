@@ -69,7 +69,7 @@ http.createServer((request, response) => {
     }
 }).listen(parseInt(startParams.port));
 
-console.log('Running on port %i. Using %s as source direcctory of images. %s as temporary directory and writing processed files to %s.',
+console.log('Running on port %i. Using %s as source directory of images. %s as temporary directory and writing processed files to %s.',
     startParams.port,
     startParams.imageSourceDirectory,
     startParams.tmpDirectory,
