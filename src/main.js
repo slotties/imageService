@@ -3,17 +3,20 @@ const url = require('url');
 const querystring = require('querystring');
 const requestParser = require('./requestParser');
 const imageService = require('./imageService');
+const signature = require('./signature');
 const args = require('./args');
 
 const defaultParams = {
     port: '8080',
     imageSourceDirectory: '/usr/share/images',
     cacheDirectory: '/var/cache/images',
-    tmpDirectory: '/tmp/images'
+    tmpDirectory: '/tmp/images',
+    signatureSecret: 'foobar'
 };
 const startParams = Object.assign({}, defaultParams, args.parse(process.argv));
 
 imageService.init(startParams.imageSourceDirectory, startParams.cacheDirectory, startParams.tmpDirectory);
+signature.init(startParams.signatureSecret);
 
 function handleHealth(response) {
     response.writeHead(200, {
@@ -23,6 +26,12 @@ function handleHealth(response) {
 }
 
 function handleResize(urlPath, queryParameters, response) {
+    if (!signature.verify(urlPath, queryParameters)) {
+        response.writeHead(400);
+        response.end('Bad signature');
+        return;        
+    }
+
     const resizeRequest = requestParser.parseResizeRequest(urlPath, queryParameters);
     if (resizeRequest) {
         const resizer = imageService.resize(resizeRequest);
