@@ -40,4 +40,5 @@ The endpoint supports the following optional request parameters:
 - `progressive` - returns a progressive JPG. This parameter is ignored when the output format is not JPG. (*NOT IMPLEMENTED YET*)
 - `sign` - a signature of the whole operation. The signature is calculated like this: `hmac-sha256(urlPath + '?' + queryWithoutSign)`.
 
-TODO: specify default values.
+TODO: switch to process.env.* for config parameters
+TODO: switch to typescript
