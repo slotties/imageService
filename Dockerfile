@@ -1,7 +1,5 @@
 FROM node:10.16.2-jessie
 
-ARG VIPS_VERSION=8.8.1
-
 WORKDIR /opt/imageService
 
 COPY package*.json ./
