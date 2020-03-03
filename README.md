@@ -23,7 +23,7 @@ The service stores resized images to an output folder. The service is expected t
     /health
 
 The endpoint will always return an HTTP 200 with the body `UP`.
-Any other status code means the server is not available and should be taken out of the load balancer.
+Unavailability of this endpoint means the server is not available and should be taken out of the load balancer.
 
 ## Resizing
 
@@ -38,6 +38,6 @@ The endpoint supports the following optional request parameters:
 - `fill` - the output image will always have a dimension of the requested `WxH` (regardless the original size). Empty space resulting in keeping the aspect ratio of the original image will be filled with the color provided by the `bg` parameter.
 - `bg` - defines a background color to fill up empty space when using the `fill` parameter.
 - `progressive` - returns a progressive JPG. This parameter is ignored when the output format is not JPG. (*NOT IMPLEMENTED YET*)
-- `sign` - a signature of the whole operation. The signature is calculated like this: `md5(mediaId + WxH + salt)`. The `salt` is provided as start parameter of this service. (*NOT IMPLEMENTED YET*)
+- `sign` - a signature of the whole operation. The signature is calculated like this: `hmac-sha256(urlPath + '?' + queryWithoutSign)`.
 
 TODO: specify default values.
