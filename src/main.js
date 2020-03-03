@@ -5,6 +5,7 @@ const requestParser = require('./requestParser');
 const imageService = require('./imageService');
 const signature = require('./signature');
 const args = require('./args');
+const inputFileResolver = require('./inputFileResolver');
 
 const defaultParams = {
     port: '8080',
@@ -15,7 +16,9 @@ const defaultParams = {
 };
 const startParams = Object.assign({}, defaultParams, args.parse(process.argv));
 
+// TODO: switch to process.env
 imageService.init(startParams.imageSourceDirectory, startParams.cacheDirectory, startParams.tmpDirectory);
+inputFileResolver.init(startParams.imageSourceDirectory, startParams.tmpDirectory);
 signature.init(startParams.signatureSecret);
 
 function handleHealth(response) {
@@ -34,23 +37,29 @@ function handleResize(urlPath, queryParameters, response) {
 
     const resizeRequest = requestParser.parseResizeRequest(urlPath, queryParameters);
     if (resizeRequest) {
-        const resizer = imageService.resize(resizeRequest);
-        if (resizer) {
-            console.log('Resized ' + urlPath + '.');
-            response.writeHead(200, {
-                // FIXME
-                'Content-Type': 'image/jpg'
+        inputFileResolver.resolveInputFile(resizeRequest)
+            .then((file) => {
+                resizeRequest.imageSourcePath = file;
+                const resizer = imageService.resize(resizeRequest);
+                if (resizer) {
+                    response.writeHead(200, {
+                        // FIXME
+                        'Content-Type': 'image/jpg'
+                    });
+                    resizer.pipe(response);
+                } else {
+                    response.writeHead(403);
+                    response.end('Invalid path: ' + urlPath);
+                }
+            })
+            .catch(() => {
+                response.writeHead(400);
+                response.end('Invalid path: ' + urlPath);
             });
-            resizer.pipe(response);
-        } else {
-            response.writeHead(403);
-            response.end('Invalid path: ' + urlPath);
-        }
     } else {
         response.writeHead(400);
         response.end('Invalid path: ' + urlPath);
     }
-
 }
 
 function handleUnknownPath(response) {
