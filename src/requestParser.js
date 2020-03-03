@@ -1,4 +1,4 @@
-const resizePathRegexp = /\/resized\/([a-zA-Z0-9=]+)_([0-9]+)x([0-9]+)\.?(jpg|png)?/;
+const resizePathRegexp = /\/resized\/([a-zA-Z0-9=_]+)_([0-9]+)x([0-9]+)\.?(jpg|png)?/;
 const colorHexCodePattern = /^[a-f0-9]+$/;
 const colorRgbPattern = /^([0-9]+),([0-9]+),([0-9]+),?([0-9\.]*)$/;
 
